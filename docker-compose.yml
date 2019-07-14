@@ -1,0 +1,24 @@
+version: '3'
+services:
+  demo-mysql-app:
+    container_name: demo-mysql-app
+    image: mysql/mysql-server:5.7
+    environment:
+      MYSQL_DATABASE: demodb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: '%'
+    ports:
+    - "3306:3306"
+    restart: always
+
+  demo-java-app:
+    build: .
+    volumes:
+    - .:/demoapp
+    - ~/.m2:/root/.m2
+    working_dir: /demoapp
+    ports:
+    - 8080:8080
+    command: mvn clean spring-boot:run
+    depends_on:
+    - demo-mysql-app
